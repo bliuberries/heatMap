@@ -1,0 +1,10 @@
+.floating-panel {
+  position: relative;
+}
+
+button {
+  background-color: rgb(158, 151, 151);
+  color: #000;
+  border-radius: 50px;
+  box-shadow: 2px 2px rgb(37, 36, 36);
+}

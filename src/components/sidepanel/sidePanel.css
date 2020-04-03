@@ -1,0 +1,41 @@
+.bar {
+  position: relative;
+  height: 10px;
+  width: 40%;
+  border-radius: 50px;
+  border: 1px solid #000;
+}
+
+.filler {
+  font-size: 9px;
+  background: #fff01c;
+  height: 100%;
+  border-radius: inherit;
+  transition: width .2s ease-in;
+}
+
+.side-panel-container {
+  color: #fff;
+  position: relative;
+  background-color: inherit;
+  /* display: flex; */
+  float: right;
+  width: 30%;
+  height: 100vh;
+  
+}
+
+.ticket-names {
+  width: 25%;
+  float: left;
+}
+.progress-bars {
+  width: 70%;
+  margin-left: 25%
+}
+
+.percent-numbers {
+  width: 30%;
+  float: right;
+  font-size: 10px;
+}

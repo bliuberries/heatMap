@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #map {
+      height: 600px;
+      width: 100%;
+      float: left;
+    }
+
+    html,
+    body {
+      background-color: #999;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #floating-panel {
+      background-color: #999;
+      border: 1px solid #000;
+      left: 25%;
+      padding: 5px;
+      position: absolute;
+      top: 10px;
+      z-index: 5;
+    }
+  </style>
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>IT Heat Map</h1>
+  <div id="floating-panel">
+    <button onclick="changeTestData(0)">Test Data Set 1</button>
+    <button onclick="changeTestData(1)">Test Data Set 2</button>
+    <button onclick="changeTestData(2)">Test Data Set 3</button>
+    <button onclick="setPoints()">Focus All</button>
+    <button onclick="setPoints('CPU')">Focus CPU</button>
+    <button onclick="setPoints('MEM')">Focus MEM</button>
+    <button onclick="setPoints('HDD')">Focus HDD</button>
+  </div>
+  <div id="map"></div>
+  <div class="numbers"></div>
+  <script>
+    var map, heatmap;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: { lat: 41.2565, lng: -95.9345 },
+        mapTypeId: 'satellite'
+      });
+      heatmap = new google.maps.visualization.HeatmapLayer({
+        data: initPoints(),
+        map: map,
+        maxIntensity: 25,
+      });
+    }
+
+    const data = [
+      {
+        lat: 41.2565,
+        long: -95.9345,
+        type: "HDD",
+        ticketCount: 25
+      },
+      {
+        lat: 41.2565,
+        long: -95.9345,
+        type: "MEM",
+        ticketCount: 10
+      },
+      {
+        lat: 41.2565,
+        long: -95.9345,
+        type: "CPU",
+        ticketCount: 4
+      },
+      {
+        lat: 39.5296,
+        long: -119.8138,
+        type: "HDD",
+        ticketCount: 1
+      },
+      {
+        lat: 39.5296,
+        long: -119.8138,
+        type: "MEM",
+        ticketCount: 10
+      },
+      {
+        lat: 39.5296,
+        long: -119.8138,
+        type: "CPU",
+        ticketCount: 13
+      },
+      {
+        lat: 29.7604,
+        long: -95.3698,
+        type: "HDD",
+        ticketCount: 5
+      },
+      {
+        lat: 29.7604,
+        long: -95.3698,
+        type: "MEM",
+        ticketCount: 15
+      },
+      {
+        lat: 29.7604,
+        long: -95.3698,
+        type: "CPU",
+        ticketCount: 35
+      },
+      {
+        lat: 47.6062,
+        long: -122.3321,
+        type: "HDD",
+        ticketCount: 10
+      },
+      {
+        lat: 47.6062,
+        long: -122.3321,
+        type: "MEM",
+        ticketCount: 7
+      },
+      {
+        lat: 47.6062,
+        long: -122.3321,
+        type: "CPU",
+        ticketCount: 11
+      },
+      {
+        lat: 37.3382,
+        long: -121.8863,
+        type: "HDD",
+        ticketCount: 25
+      },
+      {
+        lat: 37.3382,
+        long: -121.8863,
+        type: "MEM",
+        ticketCount: 21
+      },
+      {
+        lat: 37.3382,
+        long: -121.8863,
+        type: "CPU",
+        ticketCount: 10
+      }
+    ];
+
+    let ticketCountData = [
+      [25, 10, 4, 1, 10, 13, 5, 15, 35, 10, 7, 11, 25, 21, 10],
+      [15, 35, 10, 7, 11, 25, 21, 10, 25, 10, 4, 1, 10, 13, 5],
+      [13, 5, 15, 35, 10, 25, 10, 4, 1, 10, 7, 11, 25, 21, 10]
+    ]
+
+    let changeTestData = set => {
+      for(let i = 0; i < data.length; i++) {
+        data[i].ticketCount = ticketCountData[set][i];
+      }
+      heatmap.set('data', initPoints());
+    }
+
+    let gradients = {
+      'HDD': [
+        'rgba(0, 255, 255, 0)',
+        'rgba(0, 255, 255, 1)',
+        'rgba(0, 191, 255, 1)',
+        'rgba(0, 127, 255, 1)',
+        'rgba(0, 63, 255, 1)',
+        'rgba(0, 0, 255, 1)',
+        'rgba(0, 0, 223, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(63, 0, 91, 1)',
+        'rgba(127, 0, 63, 1)',
+        'rgba(191, 0, 31, 1)',
+        'rgba(255, 0, 0, 1)'
+      ],
+      'MEM': [
+        'rgba(255, 0, 255, 0)',
+        'rgba(255, 0, 255, 1)',
+        'rgba(191, 0, 255, 1)',
+        'rgba(127, 0, 255, 1)',
+        'rgba(63, 0, 255, 1)',
+        'rgba(0, 0, 255, 1)',
+        'rgba(0, 0, 223, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(0, 63, 91, 1)',
+        'rgba(0, 127, 63, 1)',
+        'rgba(0, 191, 31, 1)',
+        'rgba(0, 255, 0, 1)'
+      ],
+      'CPU': [
+        'rgba(255, 255, 0, 0)',
+        'rgba(255, 255, 0, 1)',
+        'rgba(191, 255, 0, 1)',
+        'rgba(127, 255, 0, 1)',
+        'rgba(63, 255, 0, 1)',
+        'rgba(0, 255, 0, 1)',
+        'rgba(0, 223, 0, 1)',
+        'rgba(0, 191, 0, 1)',
+        'rgba(0, 159, 0, 1)',
+        'rgba(0, 127, 0, 1)',
+        'rgba(91, 0, 63, 1)',
+        'rgba(63, 0, 127, 1)',
+        'rgba(31, 0, 191, 1)',
+        'rgba(0, 0, 255, 1)'
+      ],
+      1: null
+    }
+
+    // function changeGradient() {
+    //   heatmap.set('gradient', gradients[focus]);
+    // }
+    function setPoints(focus = 1) {
+      let allPoints = [];
+      for (let i = 0; i < data.length; i++) {
+        let { lat, long, ticketCount } = data[i];
+        if (focus === 1) {
+          allPoints.push({ location: new google.maps.LatLng(lat, long), weight: ticketCount });
+        } else if (data[i].type === focus) {
+          allPoints.push({ location: new google.maps.LatLng(lat, long), weight: ticketCount });
+        }
+      }
+      // heatmap.set('data', allPoints);
+      // heatmap.set('gradient', gradients[focus]);
+      heatmap.setOptions({data: allPoints, gradient: gradients[focus]});
+    }
+
+    function initPoints() {
+      let allPoints = [];
+      for (let i = 0; i < data.length; i++) {
+        let { lat, long } = data[i];
+        allPoints.push(new google.maps.LatLng(lat, long));
+      }
+      return allPoints;
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl10rNc2nXhY0QnoFane_NT_DnhhLXogk&libraries=visualization&callback=initMap">
+    </script>
+</body>
+
+</html>

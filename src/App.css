@@ -1,0 +1,9 @@
+.App {
+  background-color: rgb(61, 59, 59);
+  text-align: center;
+}
+
+.map-container {
+  width: 70%;
+  float: left;
+}
